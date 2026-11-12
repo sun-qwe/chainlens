@@ -1,0 +1,11 @@
+{
+  "name": "chainlens-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ChainLens · 探索链路可视化（零依赖静态前端，仅用于本地演示与论文）",
+  "scripts": {
+    "test": "node --test --test-isolation=none \"tests/*.test.mjs\"",
+    "test:default": "node --test tests/"
+  }
+}

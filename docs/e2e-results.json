@@ -1,0 +1,270 @@
+{
+  "at": "2026-11-12T03:21:29.580Z",
+  "total": 31,
+  "passed": 31,
+  "failed": 0,
+  "results": [
+    {
+      "name": "总览/campus-lab 数据规模正确",
+      "pass": true,
+      "detail": {
+        "view": "overview",
+        "scenarioId": "campus-lab",
+        "nodes": 66,
+        "edges": 51,
+        "events": 25,
+        "kpis": 6,
+        "recents": 8,
+        "firstScreenMs": 184,
+        "text": 1793
+      }
+    },
+    {
+      "name": "总览/campus-lab KPI 卡与最近事件渲染",
+      "pass": true,
+      "detail": {
+        "kpis": 6,
+        "recents": 8
+      }
+    },
+    {
+      "name": "总览/campus-lab 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "总览/corp-ad 数据规模正确",
+      "pass": true,
+      "detail": {
+        "view": "overview",
+        "scenarioId": "corp-ad",
+        "nodes": 180,
+        "edges": 150,
+        "events": 105,
+        "kpis": 6,
+        "recents": 8,
+        "firstScreenMs": 122,
+        "text": 2013
+      }
+    },
+    {
+      "name": "总览/corp-ad KPI 卡与最近事件渲染",
+      "pass": true,
+      "detail": {
+        "kpis": 6,
+        "recents": 8
+      }
+    },
+    {
+      "name": "总览/corp-ad 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "总览/cloud-k8s 数据规模正确",
+      "pass": true,
+      "detail": {
+        "view": "overview",
+        "scenarioId": "cloud-k8s",
+        "nodes": 260,
+        "edges": 320,
+        "events": 300,
+        "kpis": 6,
+        "recents": 8,
+        "firstScreenMs": 131,
+        "text": 2227
+      }
+    },
+    {
+      "name": "总览/cloud-k8s KPI 卡与最近事件渲染",
+      "pass": true,
+      "detail": {
+        "kpis": 6,
+        "recents": 8
+      }
+    },
+    {
+      "name": "总览/cloud-k8s 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "链路图/campus 渲染节点数与关键路径",
+      "pass": true,
+      "detail": {
+        "view": "graph",
+        "critical": true,
+        "cursor": 18,
+        "gnodes": 66,
+        "edges": 51,
+        "stats": 1,
+        "firstScreenMs": 93,
+        "criticalNodes": 4
+      }
+    },
+    {
+      "name": "链路图/campus 深链 cursor 生效",
+      "pass": true,
+      "detail": 18
+    },
+    {
+      "name": "链路图/campus 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "链路图/cloud-k8s 大规模渲染",
+      "pass": true,
+      "detail": {
+        "nodes": 260,
+        "gnodes": 171
+      }
+    },
+    {
+      "name": "链路图/cloud-k8s 筛选生效",
+      "pass": true,
+      "detail": {
+        "q": "",
+        "stages": [
+          "recon",
+          "validation"
+        ],
+        "types": [],
+        "severities": [],
+        "results": [],
+        "relations": []
+      }
+    },
+    {
+      "name": "链路图/cloud-k8s 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "时间线/campus 深链游标与事件渲染",
+      "pass": true,
+      "detail": {
+        "view": "timeline",
+        "cursor": 15,
+        "events": 25,
+        "visible": 25,
+        "summary": "",
+        "stats": 4
+      }
+    },
+    {
+      "name": "时间线/campus 统计卡",
+      "pass": true,
+      "detail": 4
+    },
+    {
+      "name": "时间线/campus 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "ATT&CK/corp-ad 矩阵与事件列表",
+      "pass": true,
+      "detail": {
+        "view": "attack",
+        "cells": 18,
+        "events": 80,
+        "metrics": 4,
+        "text": true
+      }
+    },
+    {
+      "name": "ATT&CK/corp-ad 指标文案",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "ATT&CK/corp-ad 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "发现/campus 表格与汇总",
+      "pass": true,
+      "detail": {
+        "view": "findings",
+        "findingsRows": 16,
+        "summary": 5,
+        "text": true
+      }
+    },
+    {
+      "name": "发现/campus 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "报告/campus 九个部分完整",
+      "pass": true,
+      "detail": {
+        "view": "report",
+        "tables": 5,
+        "rows": 46,
+        "sections": 10,
+        "text": true,
+        "printBtn": true
+      }
+    },
+    {
+      "name": "报告/campus 打印入口",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "报告/campus 无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "1366×768 无横向溢出",
+      "pass": true,
+      "detail": {
+        "scrollW": 1366,
+        "innerW": 1366
+      }
+    },
+    {
+      "name": "1366×768 总览渲染",
+      "pass": true,
+      "detail": {
+        "scrollW": 1366,
+        "innerW": 1366,
+        "scrollH": 1018,
+        "errs": 0,
+        "kpis": 6
+      }
+    },
+    {
+      "name": "全局无未捕获异常",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "坏数据被记录为错误/警告",
+      "pass": true,
+      "detail": {
+        "badErrors": 2,
+        "badWarnings": 0,
+        "cpNodes": 4,
+        "cpScore": 36.3,
+        "cpError": null
+      }
+    },
+    {
+      "name": "关键路径算法返回非空路径",
+      "pass": true,
+      "detail": {
+        "badErrors": 2,
+        "badWarnings": 0,
+        "cpNodes": 4,
+        "cpScore": 36.3,
+        "cpError": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+﻿/* ================= 时间线 ================= */
+.timeline-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+  flex: none;
+}
+
+.tl-stat {
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.tl-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-faint);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.tl-stat-label .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.tl-stat-value {
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+
+.tl-stat-value small {
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.tl-stat-sub {
+  color: var(--text-faint);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tl-mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 26px;
+  margin-top: 4px;
+}
+
+.tl-mini-bar {
+  flex: 1;
+  min-width: 3px;
+  border-radius: 2px;
+  background: var(--c, var(--cyan));
+  opacity: 0.75;
+}
+
+.timeline-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(700px 300px at 50% 0%, rgba(139, 92, 246, 0.05), transparent 70%),
+    #080e1a;
+  overflow: hidden;
+}
+
+.timeline-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+
+.tl-lane-bg {
+  fill: rgba(255, 255, 255, 0.014);
+}
+
+.tl-lane-bg.is-alt {
+  fill: rgba(255, 255, 255, 0.004);
+}
+
+.tl-lane-line {
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 1;
+}
+
+.tl-lane-label {
+  fill: #8da2c0;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.tl-lane-sub {
+  fill: #4b5f80;
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.tl-tick-line {
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+.tl-tick-label {
+  fill: #4b5f80;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-event {
+  cursor: pointer;
+}
+
+.tl-event .tl-dot {
+  fill: var(--c, #64748b);
+  stroke: #08101d;
+  stroke-width: 1.4;
+  transition: r 120ms var(--ease);
+}
+
+.tl-event .tl-ring {
+  fill: none;
+  stroke: var(--c, #64748b);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.tl-event:hover .tl-dot {
+  stroke: #ffffff;
+  stroke-width: 1.8;
+}
+
+.tl-event.is-current .tl-dot {
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px var(--c, #22d3ee));
+}
+
+.tl-event.is-dimmed {
+  opacity: 0.12;
+}
+
+.tl-event.is-pulse .tl-ring {
+  animation: pulse-ring 700ms var(--ease) 2;
+  opacity: 0.9;
+}
+
+.tl-cursor-line {
+  stroke: #22d3ee;
+  stroke-width: 1.2;
+  opacity: 0.75;
+}
+
+.tl-cursor-head {
+  fill: #22d3ee;
+}
+
+.tl-current-label {
+  fill: #a5f3fc;
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.tl-axis-title {
+  fill: #3f5375;
+  font-size: 9px;
+}
+
+.tl-empty {
+  padding: 26px;
+}
+

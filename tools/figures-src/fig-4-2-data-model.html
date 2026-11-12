@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 4-2 探索链路数据模型</title>
+<style>
+  .panel { position: absolute; border: 1.5px solid #cbd5e1; border-radius: 14px; background: #f8fafc; }
+  .panel h3 { position: absolute; top: -16px; left: 20px; background: #fff; padding: 0 10px; font-size: 19px; color: #334155; }
+  .chip { display: inline-block; font-size: 14.5px; padding: 4px 10px; border-radius: 8px; margin: 4px 6px 4px 0; border: 1px solid; }
+  .rec { font-size: 15px; color: #334155; padding: 7px 10px; border-radius: 8px; margin-bottom: 7px; background: #fff; border: 1px solid #e2e8f0; }
+  .rec b { color: #1d4ed8; font-family: Consolas, monospace; font-size: 14.5px; }
+  .ty { font-size: 13.5px; padding: 3px 9px; border-radius: 999px; color: #fff; margin: 3px 4px 3px 0; display: inline-block; }
+  .rel { font-size: 13.5px; color: #475569; font-family: Consolas, monospace; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px 8px; margin: 3px 4px 3px 0; display: inline-block; }
+  .view { font-size: 15px; background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; border-radius: 8px; padding: 7px 12px; margin-bottom: 8px; }
+  .hint { position: absolute; font-size: 14px; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <!-- 左：记录流 -->
+  <div class="panel" style="left:44px;top:56px;width:430px;height:830px;border-color:#93c5fd;background:#f5f9ff;">
+    <h3 style="color:#1d4ed8;">chain.jsonl 记录流（追加写）</h3>
+    <div style="position:absolute;left:22px;top:34px;width:386px;">
+      <div class="rec"><b>meta</b> · 会话元数据 / 授权 / 范围</div>
+      <div class="rec"><b>node</b> · 实体（资产 / 漏洞 / 会话…）</div>
+      <div class="rec"><b>edge</b> · 实体间有向关系</div>
+      <div class="rec"><b>event</b> · 时间轴动作（回放粒度）</div>
+      <div class="rec"><b>evidence</b> · 与节点关联的脱敏证据</div>
+      <div class="rec"><b>note</b> · 人工批注 / 思路记录</div>
+      <div style="margin-top:18px;font-size:15px;color:#334155;line-height:1.8;">
+        公共字段：<span class="mono">schema / seq / ts / kind</span><br>
+        语义约束：首行 meta、seq 递增、时间非递减、<br>id 唯一、边引用完整
+      </div>
+      <div style="margin-top:18px;border-radius:10px;background:#0f172a;color:#cbd5e1;padding:14px 16px;font-family:Consolas,monospace;font-size:13.5px;line-height:1.7;">
+{ "schema": "dsh-pentest/chain@1",<br>
+&nbsp; "seq": 31, "kind": "node",<br>
+&nbsp; "id": "vuln-002",<br>
+&nbsp; "type": "vulnerability",<br>
+&nbsp; "stage": "validation",<br>
+&nbsp; "risk": 9.1, "props": { … } }
+      </div>
+      <div style="margin-top:16px;font-size:14px;color:#64748b;">每一行都是不可变事实；视图状态由事件重放得到。</div>
+    </div>
+  </div>
+
+  <!-- 中：归一化模型 -->
+  <div class="panel" style="left:506px;top:56px;width:560px;height:830px;border-color:#c4b5fd;background:#faf7ff;">
+    <h3 style="color:#6d28d9;">归一化图模型（浏览器内存）</h3>
+    <div style="position:absolute;left:24px;top:34px;width:512px;">
+      <div style="font-size:16px;font-weight:700;color:#4c1d95;margin-bottom:8px;">十类节点</div>
+      <div>
+        <span class="ty" style="background:#8b5cf6;">目标组织</span><span class="ty" style="background:#38bdf8;">主机</span><span class="ty" style="background:#22d3ee;">服务</span><span class="ty" style="background:#34d399;">Web 应用</span><span class="ty" style="background:#a3e635;color:#1a2e05;">接口</span><span class="ty" style="background:#f87171;">漏洞</span><span class="ty" style="background:#fbbf24;color:#451a03;">凭据</span><span class="ty" style="background:#f472b6;">会话</span><span class="ty" style="background:#c084fc;">数据</span><span class="ty" style="background:#fb923c;">发现</span>
+      </div>
+      <div style="font-size:16px;font-weight:700;color:#4c1d95;margin:22px 0 8px;">十一种关系</div>
+      <div>
+        <span class="rel">resolves_to</span><span class="rel">exposes</span><span class="rel">runs_on</span><span class="rel">routes_to</span><span class="rel">has_vuln</span><span class="rel">exploits</span><span class="rel">grants</span><span class="rel">pivots_to</span><span class="rel">accesses</span><span class="rel">evidences</span><span class="rel">belongs_to</span>
+      </div>
+      <div style="font-size:16px;font-weight:700;color:#4c1d95;margin:22px 0 8px;">两类时间对象</div>
+      <div style="display:flex;gap:14px;">
+        <div style="flex:1;background:#fff;border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;">
+          <div style="font-size:15px;font-weight:700;color:#5b21b6;">event（动作）</div>
+          <div style="font-size:13.5px;color:#475569;line-height:1.65;margin-top:5px;">阶段、动作名、结果、风险、<br>关联 node_ids / edge_ids、ATT&CK</div>
+        </div>
+        <div style="flex:1;background:#fff;border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;">
+          <div style="font-size:15px;font-weight:700;color:#5b21b6;">evidence（证据）</div>
+          <div style="font-size:13.5px;color:#475569;line-height:1.65;margin-top:5px;">类型、标题、关联节点、哈希、<br>sensitive 标记（默认打码）</div>
+        </div>
+      </div>
+      <div style="margin-top:22px;font-size:14px;color:#6d28d9;background:#f3e8ff;border-radius:8px;padding:12px 14px;line-height:1.7;">
+        阶段（stage）用于布局分列与过程统计；<br>ATT&amp;CK 战术/技术用于安全语义与覆盖矩阵，二者解耦。
+      </div>
+    </div>
+  </div>
+
+  <!-- 右：视图消费 -->
+  <div class="panel" style="left:1108px;top:56px;width:448px;height:830px;border-color:#fcd34d;background:#fffdf5;">
+    <h3 style="color:#b45309;">由同一模型推导的六个视图</h3>
+    <div style="position:absolute;left:24px;top:34px;width:400px;">
+      <div class="view">总览 · KPI / 阶段分布 / 严重度</div>
+      <div class="view">链路图 · 阶段分层 / 关键路径 / 回放</div>
+      <div class="view">时间线 · 阶段泳道 / 事件游标</div>
+      <div class="view">ATT&amp;CK 矩阵 · 战术 × 技术热力</div>
+      <div class="view">发现与证据 · 排序 / 筛选 / 导出</div>
+      <div class="view">分析报告 · 自动生成 / 打印 PDF</div>
+      <div style="margin-top:20px;font-size:14.5px;color:#92400e;line-height:1.8;">
+        所有视图只读同一份归一化数据；<br>筛选、游标、选中对象通过统一状态容器<br>联动，并由 URL 深链复现。
+      </div>
+    </div>
+  </div>
+
+  <!-- 箭头：记录流 → 模型 → 视图 -->
+  <svg style="position:absolute;left:0;top:0;width:1600px;height:1000px;pointer-events:none;">
+    <defs>
+      <marker id="ar2" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+        <path d="M0,0 L12,6 L0,12 z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <line x1="478" y1="470" x2="500" y2="470" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar2)"/>
+    <line x1="1072" y1="470" x2="1100" y2="470" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar2)"/>
+  </svg>
+  <div class="legend"><span>记录层（不可变）</span><span>→</span><span>模型层（可计算）</span><span>→</span><span>视图层（可交互）</span></div>
+</div>
+</body>
+</html>

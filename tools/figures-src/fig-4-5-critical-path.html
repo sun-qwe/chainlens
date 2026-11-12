@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 4-5 风险加权关键路径</title>
+<style>
+  .panel { position: absolute; border: 1.5px solid #cbd5e1; border-radius: 14px; background: #f8fafc; }
+  .panel h3 { position: absolute; top: -16px; left: 18px; background: #fff; padding: 0 9px; font-size: 18px; color: #334155; }
+  .formula { font-family: "Cambria Math", Consolas, monospace; font-size: 20px; color: #0f172a; background: #fff; border: 1px solid #ddd6fe; border-radius: 10px; padding: 14px 18px; line-height: 1.9; }
+  .note { font-size: 14.5px; color: #475569; line-height: 1.85; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="panel" style="left:44px;top:58px;width:1010px;height:860px;border-color:#fecaca;background:#fffafa;">
+    <h3 style="color:#b91c1c;">阶段化链路示例（关键路径以红色标出）</h3>
+    <svg width="960" height="800" viewBox="0 0 960 800" style="position:absolute;left:26px;top:28px;">
+      <defs>
+        <marker id="ar5" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 z" fill="#94a3b8"/></marker>
+        <marker id="arred" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 z" fill="#dc2626"/></marker>
+        <filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity=".12"/></filter>
+      </defs>
+      <!-- 阶段列 -->
+      <g font-size="14" fill="#94a3b8" text-anchor="middle">
+        <text x="90" y="20">侦察</text><text x="255" y="20">验证</text><text x="420" y="20">初始访问</text><text x="585" y="20">横向移动</text><text x="750" y="20">信息收集</text><text x="915" y="20">报告</text>
+      </g>
+      <g stroke="#e2e8f0" stroke-dasharray="4 6">
+        <line x1="90" y1="34" x2="90" y2="700"/><line x1="255" y1="34" x2="255" y2="700"/><line x1="420" y1="34" x2="420" y2="700"/><line x1="585" y1="34" x2="585" y2="700"/><line x1="750" y1="34" x2="750" y2="700"/><line x1="915" y1="34" x2="915" y2="700"/>
+      </g>
+      <!-- 非关键路径 -->
+      <g stroke="#94a3b8" stroke-width="2" fill="none">
+        <line x1="90" y1="358" x2="90" y2="462" marker-end="url(#ar5)"/>
+        <path d="M120 470 C160 470 190 300 218 270" marker-end="url(#ar5)"/>
+        <path d="M255 268 L255 332" marker-end="url(#ar5)"/>
+        <path d="M255 398 L255 462" marker-end="url(#ar5)"/>
+        <path d="M325 369 C420 360 500 300 548 285" marker-end="url(#ar5)" stroke-dasharray="5 5"/>
+        <path d="M585 528 L585 612" marker-end="url(#ar5)"/>
+        <path d="M505 499 C540 499 545 499 550 499" marker-end="url(#ar5)" stroke-dasharray="5 5"/>
+      </g>
+      <!-- 关键路径 -->
+      <g stroke="#dc2626" stroke-width="3.2" fill="none">
+        <line x1="325" y1="499" x2="345" y2="499" marker-end="url(#arred)"/>
+        <line x1="420" y1="528" x2="420" y2="612" marker-end="url(#arred)"/>
+        <path d="M470 640 C520 630 500 540 510 512" marker-end="url(#arred)"/>
+        <line x1="655" y1="499" x2="675" y2="499" marker-end="url(#arred)"/>
+        <line x1="820" y1="499" x2="840" y2="499" marker-end="url(#arred)"/>
+      </g>
+      <!-- 节点 -->
+      <g filter="url(#sh)" font-size="15">
+        <g><rect x="20" y="300" width="140" height="58" rx="10" fill="#fff" stroke="#a78bfa"/><text x="90" y="325" text-anchor="middle" fill="#6d28d9" font-weight="700">实训靶场</text><text x="90" y="346" text-anchor="middle" fill="#94a3b8" font-size="12.5">target</text></g>
+        <g><rect x="20" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#38bdf8"/><text x="90" y="495" text-anchor="middle" fill="#0369a1" font-weight="700">WEB-DMZ-01</text><text x="90" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">host · risk 5.5</text></g>
+        <g><rect x="185" y="210" width="140" height="58" rx="10" fill="#fff" stroke="#22d3ee"/><text x="255" y="235" text-anchor="middle" fill="#0e7490" font-weight="700">HTTPS / 443</text><text x="255" y="256" text-anchor="middle" fill="#94a3b8" font-size="12.5">service</text></g>
+        <g><rect x="185" y="340" width="140" height="58" rx="10" fill="#fff" stroke="#f87171"/><text x="255" y="365" text-anchor="middle" fill="#b91c1c" font-weight="700">未授权导出</text><text x="255" y="386" text-anchor="middle" fill="#94a3b8" font-size="12.5">vuln · risk 7.5</text></g>
+        <g><rect x="185" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#f87171"/><text x="255" y="495" text-anchor="middle" fill="#b91c1c" font-weight="700">后台弱口令</text><text x="255" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">vuln · risk 9.1</text></g>
+        <g><rect x="350" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#fbbf24"/><text x="420" y="495" text-anchor="middle" fill="#92400e" font-weight="700">教师账号</text><text x="420" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">credential · risk 8.0</text></g>
+        <g><rect x="350" y="620" width="140" height="58" rx="10" fill="#fff" stroke="#f472b6"/><text x="420" y="645" text-anchor="middle" fill="#9d174d" font-weight="700">教师后台会话</text><text x="420" y="666" text-anchor="middle" fill="#94a3b8" font-size="12.5">session · risk 8.5</text></g>
+        <g><rect x="515" y="300" width="140" height="58" rx="10" fill="#fff" stroke="#38bdf8"/><text x="585" y="325" text-anchor="middle" fill="#0369a1" font-weight="700">OA-INTRANET-02</text><text x="585" y="346" text-anchor="middle" fill="#94a3b8" font-size="12.5">host · risk 6.5</text></g>
+        <g><rect x="515" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#f87171"/><text x="585" y="495" text-anchor="middle" fill="#b91c1c" font-weight="700">OA 越权</text><text x="585" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">vuln · risk 6.8</text></g>
+        <g><rect x="515" y="620" width="140" height="58" rx="10" fill="#fff" stroke="#f472b6"/><text x="585" y="645" text-anchor="middle" fill="#9d174d" font-weight="700">OA 普通会话</text><text x="585" y="666" text-anchor="middle" fill="#94a3b8" font-size="12.5">session</text></g>
+        <g><rect x="680" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#c084fc"/><text x="750" y="495" text-anchor="middle" fill="#6d28d9" font-weight="700">成绩导出数据</text><text x="750" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">data · risk 8.0</text></g>
+        <g><rect x="845" y="470" width="140" height="58" rx="10" fill="#fff" stroke="#fb923c"/><text x="915" y="495" text-anchor="middle" fill="#9a3412" font-weight="700">综合风险发现</text><text x="915" y="516" text-anchor="middle" fill="#94a3b8" font-size="12.5">finding · risk 9.0</text></g>
+      </g>
+      <g transform="translate(24,742)" font-size="13.5" fill="#475569">
+        <line x1="0" y1="0" x2="46" y2="0" stroke="#dc2626" stroke-width="3.2"/><text x="54" y="5">关键路径（风险加权最长路径）</text>
+        <line x1="250" y1="0" x2="296" y2="0" stroke="#94a3b8" stroke-width="2"/><text x="304" y="5">其他探索关系</text>
+        <text x="470" y="5">节点权重 w(v) = 1 + risk(v)</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="panel" style="left:1096px;top:58px;width:460px;height:860px;border-color:#c4b5fd;background:#faf7ff;">
+    <h3 style="color:#6d28d9;">动态规划求解</h3>
+    <div style="position:absolute;left:22px;top:34px;width:416px;">
+      <div style="font-size:15px;font-weight:700;color:#4c1d95;margin-bottom:8px;">约束</div>
+      <div class="note">仅使用前向边：stage(from) &lt; stage(to)；<br>同阶段按时间先后；检测并剔除回边。</div>
+      <div style="font-size:15px;font-weight:700;color:#4c1d95;margin:20px 0 8px;">状态转移</div>
+      <div class="formula">
+        dp(v) = w(v) + max<sub>u∈pred(v)</sub> dp(u)<br><br>
+        w(v) = 1 + risk(v)
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#4c1d95;margin:20px 0 8px;">答案</div>
+      <div class="note">终结点集合 { v | outdeg(v) = 0 } 中 dp 最大者，沿前驱回溯得到节点序列；复杂度 O(|V|+|E|)。</div>
+      <div style="font-size:15px;font-weight:700;color:#4c1d95;margin:20px 0 8px;">示例（左图红线）</div>
+      <div style="background:#fff;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;font-size:14px;color:#7f1d1d;line-height:1.85;">
+        host(5.5) → 弱口令(9.1) → 教师账号(8.0)<br>→ 会话(8.5) → 越权(6.8) → 数据(8.0)<br>→ 风险发现(9.0)
+      </div>
+      <div style="margin-top:22px;font-size:14px;color:#6d28d9;background:#f3e8ff;border-radius:8px;padding:12px 14px;line-height:1.75;">
+        关键路径回答"哪条链路贡献了最大风险"；<br>无前向边时回退为最大风险单节点，<br>保证异常数据下仍有可解释输出。
+      </div>
+    </div>
+  </div>
+  <div class="legend"><span>阶段为列</span><span>·</span><span>红色为关键路径</span><span>·</span><span>权重同时考虑风险与链路长度</span></div>
+</div>
+</body>
+</html>

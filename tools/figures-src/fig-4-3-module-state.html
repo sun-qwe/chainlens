@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 4-3 可视化端模块与状态管理</title>
+<style>
+  .layer { position: absolute; left: 44px; width: 1512px; border: 1.5px solid #cbd5e1; border-radius: 14px; background: #f8fafc; }
+  .layer h3 { position: absolute; top: -16px; left: 18px; background: #fff; padding: 0 10px; font-size: 18px; color: #334155; }
+  .box { position: absolute; border-radius: 9px; border: 1.5px solid #93c5fd; background: #f5f9ff; padding: 8px 12px; font-size: 14.5px; color: #1e3a8a; }
+  .box b { display: block; font-size: 15.5px; margin-bottom: 3px; }
+  .state { position: absolute; left: 520px; top: 330px; width: 560px; border: 2px solid #8b5cf6; border-radius: 14px; background: #faf5ff; padding: 14px 18px; }
+  .state h4 { font-size: 17px; color: #6d28d9; margin-bottom: 6px; }
+  .state .s { display: inline-block; font-size: 13px; background: #ede9fe; color: #5b21b6; padding: 2px 8px; border-radius: 6px; margin: 2px 3px 2px 0; font-family: Consolas, monospace; }
+  .view { position: absolute; width: 220px; height: 66px; border: 1.5px solid #fcd34d; background: #fffbeb; border-radius: 9px; padding: 8px 10px; font-size: 14px; color: #92400e; }
+  .view b { display: block; font-size: 15.5px; margin-bottom: 2px; }
+  .algo { position: absolute; border: 1.5px solid #c4b5fd; background: #faf7ff; border-radius: 9px; padding: 8px 12px; font-size: 14px; color: #5b21b6; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <!-- 路由与加载层 -->
+  <div class="layer" style="top:48px;height:128px;border-color:#93c5fd;background:#f5f9ff;">
+    <h3 style="color:#1d4ed8;">入口与路由层</h3>
+    <div class="box" style="left:24px;top:30px;width:250px;"><b>index.html</b>6 个视图挂载点 + 顶栏/筛选栏/抽屉</div>
+    <div class="box" style="left:306px;top:30px;width:250px;"><b>app.js</b>状态容器、dispatch、视图调度、bench 接口</div>
+    <div class="box" style="left:588px;top:30px;width:250px;"><b>router.js</b>hash 路由 ↔ 状态同步、深链复现</div>
+    <div class="box" style="left:870px;top:30px;width:250px;"><b>loader.js / io.js</b>manifest 加载、JSONL/JSON 导入、导出</div>
+    <div class="box" style="left:1152px;top:30px;width:330px;"><b>ui.js / components/</b>图标、tooltip、抽屉、toast、弹窗、表格</div>
+  </div>
+
+  <!-- 数据层 -->
+  <div class="layer" style="top:206px;height:112px;border-color:#5eead4;background:#f2fdfb;">
+    <h3 style="color:#0f766e;">数据层</h3>
+    <div class="box" style="left:24px;top:26px;width:360px;border-color:#2dd4bf;"><b>parser.js</b>逐行解析、坏行隔离、语义校验、质量分</div>
+    <div class="box" style="left:420px;top:26px;width:360px;border-color:#2dd4bf;"><b>fallback-data.js</b>无数据集时的最小兜底样例</div>
+    <div class="box" style="left:816px;top:26px;width:360px;border-color:#2dd4bf;"><b>constants.js / format.js</b>阶段、类型、关系、颜色、格式化</div>
+    <div class="box" style="left:1212px;top:26px;width:270px;border-color:#2dd4bf;"><b>filtering.js</b>阶段/类型/严重度/搜索过滤</div>
+  </div>
+
+  <!-- 状态容器 -->
+  <div class="state">
+    <h4>统一状态容器（单向数据流）</h4>
+    <div>
+      <span class="s">scenarioId</span><span class="s">dataset</span><span class="s">cursor</span><span class="s">playing</span><span class="s">filters</span><span class="s">selectedNodeId</span><span class="s">selectedEventId</span><span class="s">focusMode</span><span class="s">criticalPathVisible</span><span class="s">activeView</span>
+    </div>
+    <div style="font-size:14px;color:#5b21b6;margin-top:8px;">dispatch(action) → 新状态 → render(state)；视图只读，不直接改数据。</div>
+  </div>
+
+  <!-- 算法模块 -->
+  <div class="layer" style="top:474px;height:150px;border-color:#c4b5fd;background:#faf7ff;">
+    <h3 style="color:#6d28d9;">分析算法层（纯函数、node:test 可测）</h3>
+    <div class="algo" style="left:24px;top:32px;width:330px;"><b>analytics.js</b><br>指标、关键路径 DP、ATT&CK 覆盖、风险分</div>
+    <div class="algo" style="left:378px;top:32px;width:330px;"><b>layout.js</b><br>阶段分层、重心排序、轻量力松弛、力导向</div>
+    <div class="algo" style="left:732px;top:32px;width:330px;"><b>replay.js</b><br>事件游标、可见子图、播放节奏</div>
+    <div class="algo" style="left:1086px;top:32px;width:396px;"><b>graph-render.js</b><br>SVG 图层、边路由、节点卡片、交互变换</div>
+  </div>
+
+  <!-- 视图层 -->
+  <div class="layer" style="top:660px;height:216px;border-color:#fcd34d;background:#fffdf5;">
+    <h3 style="color:#b45309;">视图层（六个视图 + 详情抽屉）</h3>
+    <div class="view" style="left:24px;top:34px;"><b>总览</b>KPI / 分布 / 摘要</div>
+    <div class="view" style="left:274px;top:34px;"><b>链路图</b>分层 SVG / 关键路径 / 回放</div>
+    <div class="view" style="left:524px;top:34px;"><b>时间线</b>泳道 / 事件游标</div>
+    <div class="view" style="left:774px;top:34px;"><b>ATT&amp;CK 矩阵</b>热力 / 下钻</div>
+    <div class="view" style="left:1024px;top:34px;"><b>发现与证据</b>排序 / 筛选 / 导出</div>
+    <div class="view" style="left:1274px;top:34px;"><b>分析报告</b>自动生成 / 打印</div>
+    <div style="position:absolute;left:24px;top:124px;width:1490px;font-size:14px;color:#92400e;line-height:1.7;">
+      视图通过 dispatch 修改筛选、游标、选中对象；状态变更触发受影响视图重绘；URL 随状态更新，刷新或分享后可复现同一画面。
+    </div>
+  </div>
+
+  <svg style="position:absolute;left:0;top:0;width:1600px;height:1000px;pointer-events:none;">
+    <defs><marker id="a6" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 z" fill="#8b5cf6"/></marker></defs>
+    <line x1="800" y1="176" x2="800" y2="200" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#a6)"/>
+    <line x1="800" y1="246" x2="800" y2="272" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#a6)"/>
+    <line x1="800" y1="410" x2="800" y2="468" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#a6)"/>
+    <line x1="800" y1="470" x2="800" y2="468" stroke="#8b5cf6" stroke-width="2.5"/>
+    <line x1="800" y1="624" x2="800" y2="654" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#a6)"/>
+  </svg>
+  <div class="legend"><span>数据 → 状态 → 视图</span><span>·</span><span>分析算法与 DOM 解耦</span><span>·</span><span>深链可复现状态</span></div>
+</div>
+</body>
+</html>

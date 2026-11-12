@@ -1,0 +1,21 @@
+﻿node_modules/
+__pycache__/
+*.log
+_ThesisBuild/
+_ref/
+screenshots/tmp/
+# 构建临时文件与个人探针，不纳入仓库
+.dsh-probe.txt
+_ref/
+_topic_dump.json
+thesis/_*
+thesis/~$*
+screenshots/dev/
+# 构建/预览临时文件
+proposal/_*
+thesis/_*
+thesis/~$*
+tools/_*.py
+tools/_*.mjs
+screenshots/_*
+_root_*.tmp

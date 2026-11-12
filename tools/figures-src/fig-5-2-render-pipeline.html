@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 5-2 链路图渲染管线与图层</title>
+<style>
+  .step { position: absolute; width: 210px; height: 88px; border: 1.5px solid #93c5fd; border-radius: 10px; background: #f5f9ff; padding: 10px 12px; }
+  .step h4 { font-size: 15.5px; color: #1d4ed8; margin-bottom: 4px; }
+  .step p { font-size: 13px; color: #475569; line-height: 1.5; }
+  .layerbox { position: absolute; width: 250px; height: 86px; border-radius: 10px; padding: 10px 12px; font-size: 13.5px; }
+  .layerbox h4 { font-size: 15px; margin-bottom: 4px; }
+  .stack-label { position: absolute; font-size: 15px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div style="font-size:19px;font-weight:700;color:#334155;margin-bottom:6px;">渲染管线（从左到右）</div>
+  <svg style="position:absolute;left:0;top:0;width:1600px;height:1000px;pointer-events:none;">
+    <defs><marker id="a7" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 z" fill="#94a3b8"/></marker></defs>
+    <line x1="260" y1="120" x2="286" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a7)"/>
+    <line x1="512" y1="120" x2="538" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a7)"/>
+    <line x1="764" y1="120" x2="790" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a7)"/>
+    <line x1="1016" y1="120" x2="1042" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a7)"/>
+    <line x1="1268" y1="120" x2="1294" y2="120" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a7)"/>
+  </svg>
+  <div class="step" style="left:50px;top:76px;"><h4>读取数据</h4><p>fetch manifest / 导入文件<br>JSONL / JSON</p></div>
+  <div class="step" style="left:290px;top:76px;"><h4>解析</h4><p>逐行 parse、坏行隔离<br>seq/时间/引用校验</p></div>
+  <div class="step" style="left:542px;top:76px;"><h4>归一化</h4><p>节点/边索引、事件排序<br>统计量与质量分</p></div>
+  <div class="step" style="left:794px;top:76px;"><h4>分析</h4><p>指标、关键路径、<br>ATT&amp;CK 覆盖、筛选</p></div>
+  <div class="step" style="left:1046px;top:76px;"><h4>布局</h4><p>阶段分层 + 重心排序<br>+ 力松弛</p></div>
+  <div class="step" style="left:1298px;top:76px;"><h4>渲染与交互</h4><p>SVG 图层、缩放拖拽<br>hover / 点击 / 回放</p></div>
+
+  <!-- SVG 图层堆叠 -->
+  <div class="stack-label" style="left:50px;top:250px;">链路图 SVG 图层（自底向上）</div>
+  <div class="layerbox" style="left:50px;top:286px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#475569;"><h4>① 背景网格层</h4>阶段列、列标题、网格、缩放变换组</div>
+  <div class="layerbox" style="left:50px;top:386px;background:#eff6ff;border:1.5px solid #93c5fd;color:#1e3a8a;"><h4>② 边层</h4>贝塞尔曲线、箭头、关系标签、关键路径高亮</div>
+  <div class="layerbox" style="left:50px;top:486px;background:#f0fdfa;border:1.5px solid #5eead4;color:#0f766e;"><h4>③ 节点层</h4>节点卡片、类型图标、风险描边、关键路径描边</div>
+  <div class="layerbox" style="left:50px;top:586px;background:#fffbeb;border:1.5px solid #fcd34d;color:#92400e;"><h4>④ 标签层</h4>节点标签、阶段徽标、严重度角标</div>
+  <div class="layerbox" style="left:50px;top:686px;background:#fdf2f8;border:1.5px solid #f9a8d4;color:#9d174d;"><h4>⑤ 交互层</h4>透明命中区、hover 高亮、拖拽、tooltip 锚点</div>
+
+  <!-- 右侧说明 -->
+  <div style="position:absolute;left:380px;top:270px;width:1170px;height:520px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:24px 30px;">
+    <div style="font-size:19px;font-weight:700;color:#334155;margin-bottom:14px;">实现要点</div>
+    <div style="font-size:15.5px;color:#334155;line-height:2.05;">
+      · <b>一次布局、多层复用</b>：布局结果只计算一次，边/节点/标签共享同一坐标变换，缩放平移只改最外层 <span class="mono">transform</span>，避免重排。<br>
+      · <b>增量回放</b>：游标变化时只切换节点/边的 <span class="mono">opacity</span> 与高亮 class，不重建 SVG DOM。<br>
+      · <b>筛选重排</b>：筛选后的节点集合重新布局，使用 CSS transition 过渡位置，保持空间连续性。<br>
+      · <b>性能降级</b>：节点超过 600 时隐藏边标签与部分动画，保留悬停详情；大规模下优先保证拖动与回放流畅。<br>
+      · <b>可访问性</b>：节点和按钮带 <span class="mono">aria-label</span>，详情抽屉支持 Esc 关闭，焦点环可见。
+    </div>
+    <div style="margin-top:18px;font-size:14px;color:#64748b;">图层顺序固定，避免边遮挡节点；命中区位于最上层，保证小节点也可点击。</div>
+  </div>
+  <div class="legend"><span>读取</span><span>→</span><span>解析</span><span>→</span><span>分析</span><span>→</span><span>布局</span><span>→</span><span>渲染</span></div>
+</div>
+</body>
+</html>

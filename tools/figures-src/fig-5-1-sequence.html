@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 5-1 工具调用与记录落盘时序</title>
+<style>
+  .actor { position: absolute; top: 56px; width: 210px; text-align: center; background: #fff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 10px 6px; font-size: 16px; font-weight: 700; color: #1d4ed8; }
+  .lifeline { position: absolute; top: 110px; width: 1.5px; background: #cbd5e1; border-left: 1.5px dashed #cbd5e1; }
+  .msg { position: absolute; height: 0; border-top: 2px solid #64748b; }
+  .msg .label { position: absolute; top: -30px; left: 10px; font-size: 13.5px; color: #334155; background: #fff; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  .msg.ret { border-top-style: dashed; border-color: #94a3b8; }
+  .msg.ret .label { color: #64748b; }
+  .num { display: inline-block; min-width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background: #e0e7ff; color: #3730a3; font-size: 12.5px; margin-right: 6px; font-weight: 700; }
+  .phase { position: absolute; left: 44px; width: 1512px; border-radius: 8px; background: #f1f5f9; color: #475569; font-size: 14.5px; padding: 5px 14px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <!-- 参与者 -->
+  <div class="actor" style="left:50px;">智能体 / 操作者</div>
+  <div class="actor" style="left:310px;">dsh-pentest 工具层</div>
+  <div class="actor" style="left:570px;">校验 / 脱敏 / scope</div>
+  <div class="actor" style="left:830px;">JSONL 存储</div>
+  <div class="actor" style="left:1090px;">manifest / CLI</div>
+  <div class="actor" style="left:1350px;">ChainLens</div>
+
+  <!-- 生命线 -->
+  <div class="lifeline" style="left:155px;height:770px;"></div>
+  <div class="lifeline" style="left:415px;height:770px;"></div>
+  <div class="lifeline" style="left:675px;height:770px;"></div>
+  <div class="lifeline" style="left:935px;height:770px;"></div>
+  <div class="lifeline" style="left:1195px;height:770px;"></div>
+  <div class="lifeline" style="left:1455px;height:770px;"></div>
+
+  <!-- 阶段色带 -->
+
+  <!-- 消息 -->
+  <div class="msg" style="left:155px;top:200px;width:260px;"><span class="label"><span class="num">1</span>start_engagement(name, scope, auth)</span></div>
+  <div class="msg" style="left:415px;top:236px;width:260px;"><span class="label"><span class="num">2</span>校验授权依据 / 私网 scope</span></div>
+  <div class="msg" style="left:675px;top:272px;width:260px;"><span class="label"><span class="num">3</span>通过 → 创建 ENG-* 目录</span></div>
+  <div class="msg ret" style="left:155px;top:300px;width:260px;"><span class="label">返回 engagement_id / 路径</span></div>
+
+  <div class="msg" style="left:155px;top:380px;width:260px;"><span class="label"><span class="num">4</span>record_step(kind, data)</span></div>
+  <div class="msg" style="left:415px;top:416px;width:260px;"><span class="label"><span class="num">5</span>schema 校验 + 递归脱敏</span></div>
+  <div class="msg" style="left:675px;top:452px;width:260px;"><span class="label"><span class="num">6</span>追加一行 JSONL（单次写 + 锁）</span></div>
+  <div class="msg ret" style="left:155px;top:486px;width:260px;"><span class="label">返回 seq / id</span></div>
+  <div class="msg" style="left:155px;top:532px;width:260px;"><span class="label"><span class="num">7</span>（循环 4–6，形成事件链）</span></div>
+
+  <div class="msg" style="left:155px;top:630px;width:260px;"><span class="label"><span class="num">8</span>finish_engagement()</span></div>
+  <div class="msg" style="left:415px;top:666px;width:260px;"><span class="label"><span class="num">9</span>写 summary.json / 统计</span></div>
+  <div class="msg" style="left:935px;top:700px;width:260px;"><span class="label"><span class="num">10</span>demo --all 生成 manifest</span></div>
+  <div class="msg" style="left:1195px;top:736px;width:260px;"><span class="label"><span class="num">11</span>读取 chain.jsonl</span></div>
+  <div class="msg ret" style="left:1455px;top:780px;width:0;"><span class="label" style="left:-160px;">解析 → 图模型 → 六视图</span></div>
+
+  <div style="position:absolute;left:44px;top:900px;font-size:14.5px;color:#64748b;line-height:1.8;">
+    只追加、不改写：记录写入后即为事实；ChainLens 通过本地文件 / manifest 读取，不依赖插件进程存活。虚线为返回/消费方向。
+  </div>
+  <div class="legend"><span>实线：请求 / 写入</span><span>虚线：返回 / 消费</span><span>编号：时序步骤</span></div>
+</div>
+</body>
+</html>

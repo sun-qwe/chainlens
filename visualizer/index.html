@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="ChainLens：dsh-pentest 探索链路可视化分析工具（零依赖静态前端）">
+  <title>ChainLens · 探索链路可视化</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%230b1220'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='url(%23g)' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/overlays.css">
+  <link rel="stylesheet" href="css/overview.css">
+  <link rel="stylesheet" href="css/graph.css">
+  <link rel="stylesheet" href="css/timeline.css">
+  <link rel="stylesheet" href="css/attack.css">
+  <link rel="stylesheet" href="css/findings.css">
+  <link rel="stylesheet" href="css/about.css">
+  <link rel="stylesheet" href="css/report.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主内容</a>
+
+  <!-- 内联 SVG symbol sprite：所有图标来自本文件，不加载任何外部资源 -->
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="i-lens" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"></circle><path d="M16.2 16.2 21 21"></path><circle cx="11" cy="11" r="2.4"></circle>
+    </symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 21V4"></path><path d="M5 4h12l-2.4 4L17 12H5"></path>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="7" rx="2"></rect><rect x="3" y="13" width="18" height="7" rx="2"></rect>
+      <path d="M7 7.5h.01M7 16.5h.01M11 7.5h5M11 16.5h5"></path>
+    </symbol>
+    <symbol id="i-port" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="7" width="16" height="10" rx="2"></rect><path d="M8 7V4M16 7V4M8 17v3M16 17v3"></path><path d="M8 12h8"></path>
+    </symbol>
+    <symbol id="i-browser" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="4" width="19" height="16" rx="2"></rect><path d="M2.5 8.5h19"></path>
+      <path d="M5.5 6.2h.01M8 6.2h.01M10.5 6.2h.01"></path>
+    </symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m8 7-5 5 5 5"></path><path d="m16 7 5 5-5 5"></path><path d="m13 4-2 16"></path>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3 20 6v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"></path><path d="M12 8v5"></path><path d="M12 16.5h.01"></path>
+    </symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="8" cy="8" r="4.2"></circle><path d="m11 11 9 9"></path><path d="m16.5 16.5 2-2"></path><path d="m19 19 2-2"></path>
+    </symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="4" width="19" height="16" rx="2"></rect><path d="m6.5 9 3 3-3 3"></path><path d="M12.5 15H17"></path>
+    </symbol>
+    <symbol id="i-cube" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m12 2.5 8.5 4.8v9.4L12 21.5l-8.5-4.8V7.3z"></path><path d="m3.5 7.3 8.5 4.8 8.5-4.8"></path><path d="M12 12.1v9.4"></path>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.2 21.6 20H2.4z"></path><path d="M12 9v5"></path><path d="M12 17.3h.01"></path>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle>
+    </symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m12 3 9 5-9 5-9-5z"></path><path d="m3 13 9 5 9-5"></path><path d="m3 17.5 9 5 9-5"></path>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path>
+    </symbol>
+    <symbol id="i-report" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2.5h8l5 5v14H6z"></path><path d="M14 2.5v5h5"></path><path d="M9 12h7M9 15.5h7M9 19h4"></path>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"></circle><path d="m16.2 16.2 4.8 4.8"></path>
+    </symbol>
+    <symbol id="i-import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v11"></path><path d="m7.5 10 4.5 4 4.5-4"></path><path d="M4 17v3h16v-3"></path>
+    </symbol>
+    <symbol id="i-export" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 15V3"></path><path d="m7.5 7.5 4.5-4.5 4.5 4.5"></path><path d="M4 15v6h16v-6"></path>
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"></circle><path d="M9.3 9a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.2-2.7 4"></path><path d="M12 17.2h.01"></path>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <path d="M5.5 5.5l13 13M18.5 5.5l-13 13"></path>
+    </symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 4.8v14.4L19 12z" fill="currentColor"></path></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1"></rect><rect x="13.9" y="4.5" width="3.6" height="15" rx="1"></rect></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 4.8v14.4L8.5 12z"></path><rect x="4.5" y="4.8" width="2.4" height="14.4" rx="1"></rect></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5 4.8v14.4L15.5 12z"></path><rect x="17.1" y="4.8" width="2.4" height="14.4" rx="1"></rect></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12h14"></path></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path>
+    </symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4v6h6"></path><path d="M4.5 13a8 8 0 1 0 2.2-6.4L4 10"></path>
+    </symbol>
+    <symbol id="i-critical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2.5 4.5 13.5H11L9.5 21.5 19 10.5h-6.5z"></path>
+    </symbol>
+    <symbol id="i-force" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="2.2"></circle><circle cx="5" cy="5.5" r="1.8"></circle><circle cx="19" cy="6" r="1.8"></circle>
+      <circle cx="6" cy="18.5" r="1.8"></circle><circle cx="18.5" cy="18" r="1.8"></circle>
+      <path d="M6.5 6.7 10.2 10.3M17.5 7.2 13.6 10.5M7.3 17.4l3-3.6M17.4 16.9l-3.3-3.3"></path>
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v12"></path><path d="m7.5 10.5 4.5 4.5 4.5-4.5"></path><path d="M4 20h16"></path>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4H5.5A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"></path>
+    </symbol>
+    <symbol id="i-print" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 8V3h10v5"></path><rect x="3" y="8" width="18" height="9" rx="2"></rect><path d="M7 14h10v7H7z"></path><path d="M17 11h.01"></path>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"></circle><path d="M12 10.5V17"></path><path d="M12 7h.01"></path>
+    </symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.2 21.6 20H2.4z"></path><path d="M12 9v5"></path><path d="M12 17.3h.01"></path>
+    </symbol>
+    <symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="5.5" rx="8" ry="3"></ellipse><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"></path><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path>
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 5h18l-7 8.2V21l-4-2.4v-5.4z"></path>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12h16"></path><path d="m14.5 6.5 5.5 5.5-5.5 5.5"></path>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 13.5a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7L11 6.8"></path>
+      <path d="M14 10.5a4 4 0 0 0-5.7 0L5.5 13.3a4 4 0 1 0 5.7 5.7l1.8-1.8"></path>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path><circle cx="12" cy="12" r="3"></circle>
+    </symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 5v14M8 19l-3-3M8 19l3-3M16 19V5M16 5l-3 3M16 5l3 3"></path>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect>
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect>
+    </symbol>
+  </svg>
+
+  <div id="app" class="app is-loading">
+    <header class="topbar">
+      <div class="brand" title="ChainLens · 探索链路可视化">
+        <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-lens"></use></svg></span>
+        <span class="brand-text"><strong>ChainLens</strong><small>探索链路可视化</small></span>
+      </div>
+
+      <div class="scenario-picker">
+        <svg class="icon" aria-hidden="true"><use href="#i-database"></use></svg>
+        <label class="sr-only" for="scenario-select">选择场景</label>
+        <select id="scenario-select" aria-label="选择场景"></select>
+        <span class="scenario-badge" id="scenario-badge" title="场景加载来源">—</span>
+      </div>
+
+      <nav class="view-tabs" id="view-tabs" aria-label="视图切换" role="tablist"></nav>
+
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" id="btn-import" type="button" aria-label="导入 JSONL / JSON 数据">
+          <svg class="icon" aria-hidden="true"><use href="#i-import"></use></svg><span>导入</span>
+        </button>
+        <div class="menu-wrap">
+          <button class="btn btn-ghost" id="btn-export" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="导出菜单">
+            <svg class="icon" aria-hidden="true"><use href="#i-export"></use></svg><span>导出</span>
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </button>
+          <div class="menu" id="export-menu" role="menu" hidden>
+            <button class="menu-item" type="button" role="menuitem" data-export="findings"><svg class="icon"><use href="#i-download"></use></svg>导出发现（CSV）</button>
+            <button class="menu-item" type="button" role="menuitem" data-export="evidence"><svg class="icon"><use href="#i-download"></use></svg>导出证据（JSON）</button>
+            <button class="menu-item" type="button" role="menuitem" data-export="report"><svg class="icon"><use href="#i-download"></use></svg>导出报告（JSON）</button>
+            <div class="menu-sep" role="separator"></div>
+            <button class="menu-item" type="button" role="menuitem" data-export="link"><svg class="icon"><use href="#i-link"></use></svg>复制当前深链</button>
+          </div>
+        </div>
+        <button class="btn btn-icon" id="btn-help" type="button" aria-label="帮助与快捷键" title="帮助与快捷键（?）">
+          <svg class="icon" aria-hidden="true"><use href="#i-help"></use></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="data-banner" id="data-banner" hidden>
+      <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+      <span id="data-banner-text">未检测到数据集，已载入内置演示数据。</span>
+      <button class="btn btn-sm" id="banner-import" type="button">导入 JSONL</button>
+      <button class="btn btn-icon btn-sm" id="banner-close" type="button" aria-label="关闭提示">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-close"></use></svg>
+      </button>
+    </div>
+
+    <div class="workspace" id="workspace">
+      <aside class="sidebar" id="sidebar" aria-label="筛选条件">
+        <div class="sidebar-head">
+          <div class="sidebar-title">
+            <svg class="icon" aria-hidden="true"><use href="#i-filter"></use></svg>筛选
+            <span class="sidebar-count" id="active-filter-count" hidden></span>
+          </div>
+          <button class="btn btn-sm" id="btn-reset-filters" type="button">重置</button>
+        </div>
+
+        <div class="search-box">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+          <input id="filter-search" type="search" placeholder="搜索节点 / 事件 / 证据…" aria-label="搜索" autocomplete="off" spellcheck="false">
+          <kbd>/</kbd>
+        </div>
+
+        <div class="sidebar-scroll" id="sidebar-filters"></div>
+
+        <div class="sidebar-foot">
+          <div class="quality-card" id="quality-card"></div>
+          <div class="shortcut-hints">
+            <div class="hint-title">快捷键</div>
+            <div class="hint-row"><kbd>1</kbd>–<kbd>6</kbd><span>切换视图</span></div>
+            <div class="hint-row"><kbd>/</kbd><span>搜索</span><kbd>Esc</kbd><span>关闭</span></div>
+            <div class="hint-row"><kbd>Space</kbd><span>播放</span><kbd>←</kbd><kbd>→</kbd><span>步进</span></div>
+            <div class="hint-row"><kbd>F</kbd><span>适配视图</span><kbd>C</kbd><span>关键路径</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main" id="main" tabindex="-1">
+        <div class="view-root" id="view-root"></div>
+      </main>
+
+      <aside class="drawer" id="drawer" hidden aria-label="详情抽屉">
+        <div class="drawer-header">
+          <div class="drawer-heading">
+            <span class="drawer-kicker" id="drawer-kicker">详情</span>
+            <h2 class="drawer-title" id="drawer-title">—</h2>
+          </div>
+          <button class="btn btn-icon" id="btn-drawer-close" type="button" aria-label="关闭详情（Esc）" title="关闭（Esc）">
+            <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+          </button>
+        </div>
+        <div class="drawer-body" id="drawer-body"></div>
+      </aside>
+    </div>
+
+    <footer class="replaybar" id="replaybar" hidden aria-label="回放控制">
+      <div class="replay-controls">
+        <button class="btn btn-icon" id="btn-prev" type="button" aria-label="上一事件（←）" title="上一事件（←）">
+          <svg class="icon" aria-hidden="true"><use href="#i-prev"></use></svg>
+        </button>
+        <button class="btn btn-play" id="btn-play" type="button" aria-label="播放回放（Space）" title="播放（Space）">
+          <svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>
+        </button>
+        <button class="btn btn-icon" id="btn-next" type="button" aria-label="下一事件（→）" title="下一事件（→）">
+          <svg class="icon" aria-hidden="true"><use href="#i-next"></use></svg>
+        </button>
+      </div>
+      <div class="replay-track">
+        <div class="replay-meta">
+          <span class="replay-current" id="replay-current">全部事件已展示</span>
+          <span class="replay-counter" id="replay-counter">0 / 0</span>
+        </div>
+        <input class="replay-slider" id="replay-slider" type="range" min="0" max="0" value="0" step="1" aria-label="回放进度">
+      </div>
+      <div class="replay-right">
+        <span class="replay-time" id="replay-time">—</span>
+        <label class="speed-picker">
+          <span class="sr-only">播放速度</span>
+          <select id="replay-speed" aria-label="播放速度">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+          </select>
+        </label>
+      </div>
+    </footer>
+  </div>
+
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="modal-root" id="modal-root"></div>
+
+  <div class="loading-screen" id="loading-screen" role="status">
+    <div class="loading-ring" aria-hidden="true"></div>
+    <div class="loading-text">正在加载链路数据…</div>
+    <div class="loading-sub">读取 ../data/manifest.json</div>
+  </div>
+
+  <noscript><div class="noscript">ChainLens 需要启用 JavaScript 才能运行。</div></noscript>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

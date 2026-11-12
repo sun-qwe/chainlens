@@ -1,0 +1,61 @@
+{
+  "schema": "dsh-pentest/dataset@1",
+  "generated_at": "2026-11-12T12:00:00+08:00",
+  "generator": "dsh-pentest/0.1.0",
+  "scenarios": [
+    {
+      "id": "campus-lab",
+      "name": "星海大学 Web 靶场授权测试",
+      "file": "scenarios/campus-lab.jsonl",
+      "size": "small",
+      "description": "面向实训靶场 DMZ 与内网办公段的授权 Web 渗透探索链路（仿真数据，全程隔离网络），用于毕业设计演示与联调。",
+      "stats": {
+        "records": 150,
+        "nodes": 66,
+        "edges": 51,
+        "events": 25,
+        "evidence": 5,
+        "duration_min": 181,
+        "stages": 7,
+        "vulns": 16,
+        "critical_path_risk": 36.3
+      }
+    },
+    {
+      "id": "corp-ad",
+      "name": "云澜科技集团 AD 域授权渗透",
+      "file": "scenarios/corp-ad.jsonl",
+      "size": "medium",
+      "description": "面向虚构企业总部互联网边界与 AD 内网的授权渗透探索链路（仿真数据）；覆盖邮件、协作、CI/CD、域控与文件共享，用于中等规模数据演示。",
+      "stats": {
+        "records": 450,
+        "nodes": 180,
+        "edges": 150,
+        "events": 105,
+        "evidence": 12,
+        "duration_min": 366,
+        "stages": 7,
+        "vulns": 52,
+        "critical_path_risk": 38.2
+      }
+    },
+    {
+      "id": "cloud-k8s",
+      "name": "云澜云原生平台授权测试",
+      "file": "scenarios/cloud-k8s.jsonl",
+      "size": "large",
+      "description": "面向虚构云原生平台（Kubernetes 控制面、镜像仓库、CI/CD、秘钥管理与多租户业务 API）的授权渗透探索链路（仿真数据），用于大规模数据可视化与性能实验。",
+      "stats": {
+        "records": 900,
+        "nodes": 260,
+        "edges": 320,
+        "events": 300,
+        "evidence": 17,
+        "duration_min": 573,
+        "stages": 7,
+        "vulns": 69,
+        "critical_path_risk": 74.1
+      }
+    }
+  ]
+}

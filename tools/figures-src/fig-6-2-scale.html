@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 6-2 规模—耗时曲线</title>
+<style>
+  .panel { position: absolute; border: 1.5px solid #cbd5e1; border-radius: 14px; background: #fff; }
+  .panel h3 { position: absolute; top: -16px; left: 18px; background: #fff; padding: 0 10px; font-size: 18px; color: #334155; }
+  .axis { font-size: 15px; fill: #64748b; }
+  .value { font-size: 15px; fill: #0f172a; font-weight: 700; }
+  .legend { font-size: 15px; color: #475569; }
+  .legend i { display: inline-block; width: 26px; height: 3px; background: #2563eb; margin-right: 8px; vertical-align: 3px; }
+  .note { font-size: 15px; color: #475569; line-height: 1.9; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="panel" style="left:44px;top:50px;width:920px;height:830px;border-color:#bfdbfe;">
+    <h3 style="color:#1d4ed8;">节点规模—管线耗时曲线</h3>
+    <svg width="860" height="760" viewBox="0 0 860 760" style="position:absolute;left:26px;top:30px;">
+      <g class="axis">
+        <line x1="100" y1="640" x2="820" y2="640" stroke="#cbd5e1"/>
+        <line x1="100" y1="80" x2="100" y2="640" stroke="#cbd5e1"/>
+        <text x="88" y="644" text-anchor="end">0</text>
+        <text x="88" y="504" text-anchor="end">8</text>
+        <text x="88" y="368" text-anchor="end">16</text>
+        <text x="88" y="232" text-anchor="end">24</text>
+        <text x="88" y="96" text-anchor="end">32</text>
+        <line x1="100" y1="504" x2="820" y2="504" stroke="#f1f5f9"/>
+        <line x1="100" y1="368" x2="820" y2="368" stroke="#f1f5f9"/>
+        <line x1="100" y1="232" x2="820" y2="232" stroke="#f1f5f9"/>
+        <line x1="100" y1="96" x2="820" y2="96" stroke="#f1f5f9"/>
+      </g>
+      <!-- x 位置：66->220, 180->470, 260->700 ; y = 640 - ms*17 -->
+      <polyline points="220,509 470,314 700,244" fill="none" stroke="#2563eb" stroke-width="3"/>
+      <g fill="#2563eb">
+        <circle cx="220" cy="509" r="7"/><circle cx="470" cy="314" r="7"/><circle cx="700" cy="244" r="7"/>
+      </g>
+      <g class="value" text-anchor="middle">
+        <text x="220" y="486">7.7 ms</text>
+        <text x="470" y="291">19.2 ms</text>
+        <text x="700" y="221">23.3 ms</text>
+      </g>
+      <g class="axis" text-anchor="middle">
+        <text x="220" y="672">66 节点 / 150 记录</text>
+        <text x="470" y="672">180 节点 / 450 记录</text>
+        <text x="700" y="672">260 节点 / 900 记录</text>
+        <text x="460" y="712">场景规模（节点数 / 记录数）</text>
+        <text x="40" y="360" transform="rotate(-90 40 360)">管线耗时（ms）</text>
+      </g>
+      <!-- 拟合注释 -->
+      <line x1="220" y1="509" x2="700" y2="244" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="6 6"/>
+      <text x="730" y="300" class="axis">近似线性</text>
+      <text x="730" y="322" class="axis">R² ≈ 0.97</text>
+    </svg>
+    <div class="legend" style="left:30px;top:790px;"><span><i></i>解析 + 布局 + 渲染合计（中位数）</span></div>
+  </div>
+
+  <div class="panel" style="left:996px;top:50px;width:560px;height:830px;border-color:#ddd6fe;">
+    <h3 style="color:#6d28d9;">规模实验结论</h3>
+    <div class="note" style="position:absolute;left:28px;top:40px;width:500px;">
+      <p style="margin-bottom:16px;"><b>1. 增长趋势</b><br>节点数从 66 增至 260（约 3.9 倍），管线耗时从 7.7 ms 增至 23.3 ms（约 3.0 倍），近似线性，未出现平方级膨胀。主要增长来自 SVG 节点/边 DOM 的创建与样式计算（渲染 4.3 → 14.5 ms）。</p>
+      <p style="margin-bottom:16px;"><b>2. 设计目标对照</b><br>NFR-01 要求 260 节点 / 320 关系首屏 &lt; 1 s。实测页面首屏 80 ms、管线 23.3 ms，均远低于目标；1366×768 下同样无横向溢出。</p>
+      <p style="margin-bottom:16px;"><b>3. 瓶颈定位</b><br>解析与布局合计仅 8.9 ms（260 节点），渲染占比约 62%。后续若扩展到千级节点，应优先优化 SVG 绘制（虚拟化、Canvas/WebGL、边简化），而非布局算法。</p>
+      <p style="margin-bottom:16px;"><b>4. 降级策略</b><br>节点超过 600 时隐藏边标签与部分动画；默认缩放不低于 0.7，保证可读字号；用户可点"适配"查看全貌，或通过筛选聚焦子图。</p>
+      <p><b>5. 可复现性</b><br>数据由固定 seed 生成；实验在 headless Chrome 157、1600×1000 下完成，三次采样取中位数；bench 接口不产生 UI 副作用。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

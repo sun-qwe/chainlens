@@ -1,0 +1,350 @@
+{
+  "at": "2026-11-12T02:40:12.737Z",
+  "environment": {
+    "browser": "Chrome headless 157",
+    "viewport": "1600x1000",
+    "node": "v24.21.0"
+  },
+  "reps": 3,
+  "scenarios": [
+    {
+      "scenarioId": "campus-lab",
+      "runs": 3,
+      "nodes": 66,
+      "edges": 51,
+      "events": 25,
+      "fetchMs": 0,
+      "parseMs": 1,
+      "layoutMs": 2.3,
+      "renderMs": 4.3,
+      "firstScreenMs": 7.7,
+      "wallMs": 8.2,
+      "navigationMs": 568.2,
+      "renderedNodes": 66,
+      "memory": {
+        "usedMB": 2.69,
+        "totalMB": 5.11
+      },
+      "domNodes": 958,
+      "errors": 0,
+      "samples": [
+        {
+          "bench": {
+            "scenarioId": "campus-lab",
+            "records": 150,
+            "nodes": 66,
+            "edges": 51,
+            "events": 25,
+            "fetchMs": 0.1,
+            "parseMs": 1,
+            "layoutMs": 2.3,
+            "renderMs": 4.3,
+            "firstScreenMs": 7.7,
+            "renderedNodes": 66,
+            "memory": {
+              "usedMB": 2.69,
+              "totalMB": 5.11
+            },
+            "at": "2026-11-12T02:35:12.660Z"
+          },
+          "wallMs": 8.2,
+          "firstScreenMs": 77,
+          "navigationMs": 568.2,
+          "domNodes": 958,
+          "memory": {
+            "usedMB": 2.69,
+            "totalMB": 5.11
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "campus-lab",
+            "records": 150,
+            "nodes": 66,
+            "edges": 51,
+            "events": 25,
+            "fetchMs": 0,
+            "parseMs": 0.8,
+            "layoutMs": 2.3,
+            "renderMs": 4.1,
+            "firstScreenMs": 7.2,
+            "renderedNodes": 66,
+            "memory": {
+              "usedMB": 2.69,
+              "totalMB": 5.61
+            },
+            "at": "2026-11-12T02:35:45.733Z"
+          },
+          "wallMs": 7.9,
+          "firstScreenMs": 90,
+          "navigationMs": 138.3,
+          "domNodes": 958,
+          "memory": {
+            "usedMB": 2.69,
+            "totalMB": 5.61
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "campus-lab",
+            "records": 150,
+            "nodes": 66,
+            "edges": 51,
+            "events": 25,
+            "fetchMs": 0,
+            "parseMs": 1.4,
+            "layoutMs": 2.9,
+            "renderMs": 5.6,
+            "firstScreenMs": 9.9,
+            "renderedNodes": 66,
+            "memory": {
+              "usedMB": 2.69,
+              "totalMB": 5.36
+            },
+            "at": "2026-11-12T02:36:19.360Z"
+          },
+          "wallMs": 10.5,
+          "firstScreenMs": 72,
+          "navigationMs": 707.6,
+          "domNodes": 958,
+          "memory": {
+            "usedMB": 2.69,
+            "totalMB": 5.36
+          },
+          "errors": 0,
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "scenarioId": "corp-ad",
+      "runs": 3,
+      "nodes": 180,
+      "edges": 150,
+      "events": 105,
+      "fetchMs": 0.1,
+      "parseMs": 3,
+      "layoutMs": 5.3,
+      "renderMs": 11.5,
+      "firstScreenMs": 19.2,
+      "wallMs": 20,
+      "navigationMs": 1190.9,
+      "renderedNodes": 180,
+      "memory": {
+        "usedMB": 3.76,
+        "totalMB": 8.77
+      },
+      "domNodes": 995,
+      "errors": 0,
+      "samples": [
+        {
+          "bench": {
+            "scenarioId": "corp-ad",
+            "records": 450,
+            "nodes": 180,
+            "edges": 150,
+            "events": 105,
+            "fetchMs": 0.1,
+            "parseMs": 2.8,
+            "layoutMs": 4.1,
+            "renderMs": 11.5,
+            "firstScreenMs": 18.5,
+            "renderedNodes": 180,
+            "memory": {
+              "usedMB": 3.76,
+              "totalMB": 8.77
+            },
+            "at": "2026-11-12T02:36:53.475Z"
+          },
+          "wallMs": 19.3,
+          "firstScreenMs": 101,
+          "navigationMs": 1116.4,
+          "domNodes": 995,
+          "memory": {
+            "usedMB": 3.76,
+            "totalMB": 8.77
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "corp-ad",
+            "records": 450,
+            "nodes": 180,
+            "edges": 150,
+            "events": 105,
+            "fetchMs": 0.1,
+            "parseMs": 3.1,
+            "layoutMs": 5.4,
+            "renderMs": 10.6,
+            "firstScreenMs": 19.2,
+            "renderedNodes": 180,
+            "memory": {
+              "usedMB": 3.76,
+              "totalMB": 9.02
+            },
+            "at": "2026-11-12T02:37:28.120Z"
+          },
+          "wallMs": 20,
+          "firstScreenMs": 96,
+          "navigationMs": 1743.9,
+          "domNodes": 995,
+          "memory": {
+            "usedMB": 3.76,
+            "totalMB": 9.02
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "corp-ad",
+            "records": 450,
+            "nodes": 180,
+            "edges": 150,
+            "events": 105,
+            "fetchMs": 0.1,
+            "parseMs": 3,
+            "layoutMs": 5.3,
+            "renderMs": 12.3,
+            "firstScreenMs": 20.7,
+            "renderedNodes": 180,
+            "memory": {
+              "usedMB": 3.76,
+              "totalMB": 10.52
+            },
+            "at": "2026-11-12T02:38:02.258Z"
+          },
+          "wallMs": 21.5,
+          "firstScreenMs": 81,
+          "navigationMs": 1190.9,
+          "domNodes": 995,
+          "memory": {
+            "usedMB": 3.76,
+            "totalMB": 10.52
+          },
+          "errors": 0,
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "scenarioId": "cloud-k8s",
+      "runs": 3,
+      "nodes": 260,
+      "edges": 320,
+      "events": 300,
+      "fetchMs": 0.1,
+      "parseMs": 3.6,
+      "layoutMs": 5.3,
+      "renderMs": 14.5,
+      "firstScreenMs": 23.3,
+      "wallMs": 24.3,
+      "navigationMs": 245.2,
+      "renderedNodes": 260,
+      "memory": {
+        "usedMB": 5.23,
+        "totalMB": 10.52
+      },
+      "domNodes": 1046,
+      "errors": 0,
+      "samples": [
+        {
+          "bench": {
+            "scenarioId": "cloud-k8s",
+            "records": 900,
+            "nodes": 260,
+            "edges": 320,
+            "events": 300,
+            "fetchMs": 0,
+            "parseMs": 3.6,
+            "layoutMs": 5.2,
+            "renderMs": 14.5,
+            "firstScreenMs": 23.3,
+            "renderedNodes": 260,
+            "memory": {
+              "usedMB": 5.23,
+              "totalMB": 10.52
+            },
+            "at": "2026-11-12T02:38:35.444Z"
+          },
+          "wallMs": 24.3,
+          "firstScreenMs": 80,
+          "navigationMs": 116.4,
+          "domNodes": 1046,
+          "memory": {
+            "usedMB": 5.23,
+            "totalMB": 10.52
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "cloud-k8s",
+            "records": 900,
+            "nodes": 260,
+            "edges": 320,
+            "events": 300,
+            "fetchMs": 0.1,
+            "parseMs": 4.3,
+            "layoutMs": 12.3,
+            "renderMs": 19.5,
+            "firstScreenMs": 36.2,
+            "renderedNodes": 260,
+            "memory": {
+              "usedMB": 6.4,
+              "totalMB": 10.52
+            },
+            "at": "2026-11-12T02:39:09.599Z"
+          },
+          "wallMs": 37.3,
+          "firstScreenMs": 86,
+          "navigationMs": 1242.2,
+          "domNodes": 1046,
+          "memory": {
+            "usedMB": 6.4,
+            "totalMB": 10.52
+          },
+          "errors": 0,
+          "consoleErrors": []
+        },
+        {
+          "bench": {
+            "scenarioId": "cloud-k8s",
+            "records": 900,
+            "nodes": 260,
+            "edges": 320,
+            "events": 300,
+            "fetchMs": 0.1,
+            "parseMs": 2.9,
+            "layoutMs": 5.3,
+            "renderMs": 13.7,
+            "firstScreenMs": 22,
+            "renderedNodes": 260,
+            "memory": {
+              "usedMB": 5.22,
+              "totalMB": 9.77
+            },
+            "at": "2026-11-12T02:39:42.736Z"
+          },
+          "wallMs": 22.8,
+          "firstScreenMs": 82,
+          "navigationMs": 245.2,
+          "domNodes": 1046,
+          "memory": {
+            "usedMB": 5.22,
+            "totalMB": 9.77
+          },
+          "errors": 0,
+          "consoleErrors": []
+        }
+      ]
+    }
+  ]
+}

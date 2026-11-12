@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 4-4 阶段约束分层布局流程</title>
+<style>
+  .step { position: absolute; width: 246px; height: 96px; border: 1.5px solid #93c5fd; border-radius: 12px; background: #f5f9ff; padding: 12px 14px; }
+  .step h4 { font-size: 17px; color: #1d4ed8; margin-bottom: 5px; }
+  .step p { font-size: 13.5px; color: #475569; line-height: 1.55; }
+  .io { background: #f0fdf4; border-color: #86efac; }
+  .io h4 { color: #15803d; }
+  .out { background: #fff7ed; border-color: #fdba74; }
+  .out h4 { color: #c2410c; }
+  .algo { position: absolute; left: 44px; top: 760px; width: 1512px; border: 1.5px solid #c4b5fd; background: #faf7ff; border-radius: 12px; padding: 16px 22px; }
+  .algo h4 { font-size: 17px; color: #6d28d9; margin-bottom: 8px; }
+  .algo code { font-family: Consolas, monospace; font-size: 14px; color: #334155; }
+  .badge { position: absolute; font-size: 14px; background: #ecfdf5; color: #047857; border: 1px solid #6ee7b7; border-radius: 999px; padding: 5px 12px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <svg style="position:absolute;left:0;top:0;width:1600px;height:1000px;pointer-events:none;">
+    <defs><marker id="a4" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#94a3b8"/></marker></defs>
+    <!-- 第一行 -->
+    <line x1="294" y1="132" x2="326" y2="132" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <line x1="578" y1="132" x2="610" y2="132" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <line x1="862" y1="132" x2="894" y2="132" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <line x1="1146" y1="132" x2="1178" y2="132" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <!-- 换行 -->
+    <path d="M1301 180 L1301 236 L160 236 L160 264" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <!-- 第二行右→左 -->
+    <line x1="586" y1="312" x2="618" y2="312" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <line x1="870" y1="312" x2="902" y2="312" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    <line x1="1154" y1="312" x2="1186" y2="312" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a4)"/>
+    
+  </svg>
+
+  <!-- 第一行 5 个 -->
+  <div class="step io" style="left:48px;top:84px;"><h4>输入图</h4><p>节点 V、边 E<br>阶段序号 s(v) ∈ [0,6]</p></div>
+  <div class="step" style="left:332px;top:84px;"><h4>① 阶段分层</h4><p>layer(v) = s(v)<br>空层折叠、列宽自适应</p></div>
+  <div class="step" style="left:616px;top:84px;"><h4>② 初始排序</h4><p>类型优先级 → 风险降序<br>作为重心法初值</p></div>
+  <div class="step" style="left:900px;top:84px;"><h4>③ 正向重心</h4><p>按前驱位置均值排序<br>重复 4 轮，跨层边加权</p></div>
+  <div class="step" style="left:1184px;top:84px;"><h4>④ 反向重心</h4><p>按后继位置均值排序<br>与正向交替，减少交叉</p></div>
+
+  <!-- 第二行 4 个（从右到左：⑤⑥⑦⑧） -->
+  <div class="step out" style="left:900px;top:264px;"><h4>⑧ 输出与渲染</h4><p>SVG 坐标、边路由<br>缩放/拖拽/回放</p></div>
+  <div class="step" style="left:616px;top:264px;"><h4>⑦ 边路由</h4><p>三次贝塞尔曲线<br>反向边绕行，箭头标记</p></div>
+  <div class="step" style="left:332px;top:264px;"><h4>⑥ 坐标分配</h4><p>x = 层索引 × 列宽<br>y 按层内序号居中</p></div>
+  <div class="step" style="left:48px;top:264px;"><h4>⑤ 同层力松弛</h4><p>固定 x，排斥+弹簧<br>迭代 18 次消除重叠</p></div>
+
+
+  <div style="position:absolute;left:44px;top:410px;width:1512px;height:300px;border:1.5px solid #e2e8f0;border-radius:12px;background:#fff;">
+    <div style="font-size:17px;color:#334155;font-weight:700;padding:12px 18px;">阶段硬约束示意：同一阶段固定在同一列，列内顺序由重心法调整</div>
+    <svg width="1470" height="230" viewBox="0 0 1470 230" style="position:absolute;left:20px;top:50px;">
+      <g font-size="14" fill="#64748b" text-anchor="middle">
+        <text x="105" y="20">侦察</text><text x="295" y="20">验证</text><text x="485" y="20">初始访问</text><text x="675" y="20">权限提升</text><text x="865" y="20">横向移动</text><text x="1055" y="20">信息收集</text><text x="1245" y="20">报告输出</text>
+      </g>
+      <g stroke="#e2e8f0" stroke-dasharray="4 6"><line x1="105" y1="34" x2="105" y2="210"/><line x1="295" y1="34" x2="295" y2="210"/><line x1="485" y1="34" x2="485" y2="210"/><line x1="675" y1="34" x2="675" y2="210"/><line x1="865" y1="34" x2="865" y2="210"/><line x1="1055" y1="34" x2="1055" y2="210"/><line x1="1245" y1="34" x2="1245" y2="210"/></g>
+      <g stroke="#93c5fd" stroke-width="1.8" fill="#eff6ff">
+        <rect x="55" y="60" width="100" height="40" rx="8"/><rect x="55" y="130" width="100" height="40" rx="8"/>
+        <rect x="245" y="80" width="100" height="40" rx="8"/><rect x="245" y="150" width="100" height="40" rx="8"/>
+        <rect x="435" y="70" width="100" height="40" rx="8"/><rect x="435" y="140" width="100" height="40" rx="8"/>
+        <rect x="625" y="90" width="100" height="40" rx="8"/><rect x="625" y="160" width="100" height="40" rx="8"/>
+        <rect x="815" y="65" width="100" height="40" rx="8"/><rect x="815" y="135" width="100" height="40" rx="8"/>
+        <rect x="1005" y="85" width="100" height="40" rx="8"/><rect x="1005" y="155" width="100" height="40" rx="8"/>
+        <rect x="1195" y="75" width="100" height="40" rx="8"/><rect x="1195" y="145" width="100" height="40" rx="8"/>
+      </g>
+      <g stroke="#94a3b8" stroke-width="1.8" fill="none">
+        <path d="M155 80 C200 80 210 100 245 100" marker-end="url(#a4)"/>
+        <path d="M155 150 C200 150 210 170 245 170" marker-end="url(#a4)"/>
+        <path d="M345 100 C390 100 400 90 435 90" marker-end="url(#a4)"/>
+        <path d="M345 170 C390 170 400 160 435 160" marker-end="url(#a4)"/>
+        <path d="M535 90 C570 90 585 100 625 110" marker-end="url(#a4)"/>
+        <path d="M725 110 C760 110 775 95 815 85" marker-end="url(#a4)"/>
+        <path d="M915 85 C950 85 965 100 1005 105" marker-end="url(#a4)"/>
+        <path d="M1015 175 C1070 175 1130 120 1195 100" marker-end="url(#a4)"/>
+      </g>
+      <g font-size="12.5" fill="#94a3b8" text-anchor="middle">
+        <text x="105" y="220">阶段 0</text><text x="295" y="220">阶段 1</text><text x="485" y="220">阶段 2</text><text x="675" y="220">阶段 3</text><text x="865" y="220">阶段 4</text><text x="1055" y="220">阶段 5</text><text x="1245" y="220">阶段 6</text>
+      </g>
+    </svg>
+  </div>
+  <!-- 算法说明 -->
+  <div class="algo">
+    <h4>算法要点</h4>
+    <div style="font-size:14.5px;color:#334155;line-height:1.9;">
+      · 阶段是硬约束：同一阶段的节点固定在同一列，保证"从左到右 = 从侦察到报告"的阅读顺序；<br>
+      · 复杂度：分层与排序 O(k·(|V|+|E|))，k=4；同层松弛 O(80·|V|)，在 300 节点规模下为毫秒级，支持筛选后实时重排；<br>
+      · 确定性：不使用随机数，节点顺序由类型/风险/ID 决定，保证同一份数据的论文截图可复现。
+    </div>
+  </div>
+  <div class="legend"><span>输入</span><span>→</span><span>布局阶段</span><span>→</span><span>输出</span></div>
+</div>
+</body>
+</html>

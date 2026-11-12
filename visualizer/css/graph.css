@@ -1,0 +1,354 @@
+﻿/* ================= 链路图 ================= */
+.view-graph {
+  min-height: 0;
+}
+
+.graph-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 2px 2px 9px;
+  flex: none;
+}
+
+.toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: rgba(5, 9, 18, 0.4);
+}
+
+.toolbar-group .btn {
+  height: 27px;
+  padding: 0 9px;
+  border-color: transparent;
+  background: transparent;
+  font-size: 11px;
+}
+
+.toolbar-group .btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.toolbar-group .btn.is-active {
+  background: var(--accent-soft);
+  color: var(--cyan);
+}
+
+.toolbar-group .btn-icon {
+  width: 27px;
+  padding: 0;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.graph-stat {
+  color: var(--text-faint);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.graph-stat b {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.graph-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(700px 380px at 20% 0%, rgba(34, 211, 238, 0.035), transparent 65%),
+    radial-gradient(640px 340px at 90% 100%, rgba(139, 92, 246, 0.045), transparent 65%),
+    #080e1a;
+  overflow: hidden;
+}
+
+.graph-canvas.is-relayout {
+  animation: graph-relayout 260ms var(--ease);
+}
+
+@keyframes graph-relayout {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+.graph-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.graph-svg.is-panning {
+  cursor: grabbing;
+}
+
+.graph-viewport {
+  will-change: transform;
+}
+
+.stage-band-rect {
+  fill: rgba(255, 255, 255, 0.016);
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 1;
+}
+
+.stage-band-label {
+  fill: #9ab0cd;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.stage-band-count {
+  fill: #5d7395;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+
+.stage-band-line {
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+/* 边 */
+.edge-path {
+  fill: none;
+  stroke-width: 1.5;
+  opacity: 0.8;
+  transition: opacity 160ms var(--ease), stroke-width 160ms var(--ease);
+  stroke-linecap: round;
+}
+
+.edge-path.rel-resolves_to { stroke: #38bdf8; }
+.edge-path.rel-exposes { stroke: #22d3ee; }
+.edge-path.rel-runs_on { stroke: #2dd4bf; }
+.edge-path.rel-routes_to { stroke: #34d399; stroke-dasharray: 4 4; }
+.edge-path.rel-has_vuln { stroke: #f87171; }
+.edge-path.rel-exploits { stroke: #ef4444; }
+.edge-path.rel-grants { stroke: #fbbf24; }
+.edge-path.rel-pivots_to { stroke: #f472b6; }
+.edge-path.rel-accesses { stroke: #c084fc; }
+.edge-path.rel-evidences { stroke: #94a3b8; stroke-dasharray: 3 4; }
+.edge-path.rel-belongs_to { stroke: #64748b; stroke-dasharray: 2 4; }
+
+.edge-path.is-highlight {
+  opacity: 1;
+  stroke-width: 2;
+}
+
+.edge-path.is-critical {
+  stroke: #ef4444;
+  stroke-width: 2.2;
+  stroke-dasharray: 7 5;
+  opacity: 1;
+  animation: dash-flow 0.9s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.55));
+}
+
+.edge-path.is-current {
+  stroke-width: 2.8;
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.5));
+}
+
+.edge-path.is-dim {
+  opacity: 0.07;
+}
+
+.edge-path.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.edge-label {
+  fill: #8da2c0;
+  font-size: 9px;
+  paint-order: stroke;
+  stroke: #080e1a;
+  stroke-width: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms var(--ease);
+}
+
+.edge-group:hover .edge-label {
+  opacity: 1;
+}
+
+.edge-group:hover .edge-path {
+  opacity: 1;
+  stroke-width: 2;
+}
+
+/* 节点 */
+.gnode {
+  cursor: pointer;
+  transition: opacity 220ms var(--ease);
+}
+
+.gnode .node-card {
+  fill: #0e1929;
+  stroke: #2a3d61;
+  stroke-width: 1.1;
+  transition: stroke 140ms var(--ease), fill 140ms var(--ease);
+}
+
+.gnode .node-accent {
+  fill: var(--nt-color, #22d3ee);
+  opacity: 0.95;
+}
+
+.gnode .node-icon {
+  color: var(--nt-color, #22d3ee);
+}
+
+.gnode .node-label {
+  fill: #edf3fb;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.gnode .node-type-text {
+  fill: #93a9c8;
+  font-size: 9.5px;
+  font-family: var(--font-sans);
+}
+
+.gnode .node-risk-bg {
+  fill: #1a2740;
+}
+
+.gnode .node-risk-fill {
+  fill: var(--risk-color, #22c55e);
+}
+
+.gnode .node-risk-text {
+  fill: #61769a;
+  font-size: 8.5px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.gnode:hover .node-card {
+  stroke: var(--nt-color, #22d3ee);
+  fill: #111d31;
+}
+
+.gnode.is-focused .node-card {
+  stroke: #f8fafc;
+  stroke-width: 1.7;
+  fill: #132039;
+}
+
+.gnode.is-neighbor .node-card {
+  stroke: var(--nt-color, #22d3ee);
+  stroke-width: 1.35;
+}
+
+.gnode.is-dimmed {
+  opacity: 0.16;
+}
+
+.gnode.is-critical .node-card {
+  stroke: #ef4444;
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.45));
+}
+
+.gnode.is-current .node-card {
+  stroke: #22d3ee;
+  stroke-width: 1.8;
+  fill: #0f2233;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.45));
+}
+
+.gnode.is-unrevealed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gnode .node-halo {
+  fill: none;
+  stroke: #22d3ee;
+  stroke-width: 2;
+  opacity: 0;
+}
+
+.gnode.is-pulse .node-halo {
+  opacity: 0.9;
+  animation: pulse-ring 750ms var(--ease) 2;
+}
+
+.graph-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(8, 14, 26, 0.72);
+  backdrop-filter: blur(2px);
+  color: var(--text-faint);
+  text-align: center;
+  padding: 20px;
+}
+
+.graph-empty strong {
+  color: var(--text-dim);
+  font-size: var(--fs-md);
+}
+
+.graph-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  max-width: calc(100% - 24px);
+  padding: 7px 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: rgba(8, 14, 26, 0.74);
+  backdrop-filter: blur(6px);
+  color: var(--text-faint);
+  font-size: 9.5px;
+  pointer-events: none;
+}
+
+.graph-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.graph-legend i {
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c);
+  display: inline-block;
+}
+
+.graph-legend i.dash {
+  background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 5px);
+}
+

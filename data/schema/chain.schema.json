@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chainlens.local/schema/dsh-pentest-chain-1.json",
+  "title": "dsh-pentest exploration chain record (v1)",
+  "description": "JSON Lines record of the dsh-pentest exploration chain. One JSON object per line. First record MUST be kind=meta; seq strictly increasing from 1; ts non-decreasing after meta.",
+  "type": "object",
+  "required": ["schema", "seq", "ts", "kind"],
+  "properties": {
+    "schema": { "const": "dsh-pentest/chain@1" },
+    "seq": { "type": "integer", "minimum": 1 },
+    "ts": { "type": "string", "format": "date-time" },
+    "kind": { "enum": ["meta", "node", "edge", "event", "evidence", "note"] },
+    "source": { "enum": ["plugin", "simulation", "import"] },
+    "actor": { "type": "string", "maxLength": 128 },
+    "tags": {
+      "type": "array", "maxItems": 10, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 32 }
+    }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    { "if": { "properties": { "kind": { "const": "meta" } }, "required": ["kind"] },
+      "then": { "required": ["engagement", "tool"] } },
+    { "if": { "properties": { "kind": { "const": "node" } }, "required": ["kind"] },
+      "then": { "required": ["id", "type", "label", "stage"] } },
+    { "if": { "properties": { "kind": { "const": "edge" } }, "required": ["kind"] },
+      "then": { "required": ["id", "from", "to", "relation", "stage"] } },
+    { "if": { "properties": { "kind": { "const": "event" } }, "required": ["kind"] },
+      "then": { "required": ["id", "stage", "action", "summary", "result"] } },
+    { "if": { "properties": { "kind": { "const": "evidence" } }, "required": ["kind"] },
+      "then": { "required": ["id", "type", "title"] } },
+    { "if": { "properties": { "kind": { "const": "note" } }, "required": ["kind"] },
+      "then": { "required": ["id", "content"] } }
+  ],
+  "$defs": {
+    "identifier": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "stage": {
+      "enum": ["recon", "validation", "initial_access", "privilege_escalation", "lateral_movement", "collection", "reporting"]
+    },
+    "nodeType": {
+      "enum": ["target", "host", "service", "webapp", "endpoint", "vulnerability", "credential", "session", "data", "finding"]
+    },
+    "relation": {
+      "enum": ["resolves_to", "exposes", "runs_on", "routes_to", "has_vuln", "exploits", "grants", "pivots_to", "accesses", "evidences", "belongs_to"]
+    },
+    "attck": {
+      "type": "object",
+      "required": ["tactic", "technique"],
+      "properties": {
+        "tactic": { "type": "string", "pattern": "^TA\\d{4}$" },
+        "technique": { "type": "string", "pattern": "^T\\d{4}(\\.\\d{3})?$" },
+        "name": { "type": "string", "maxLength": 128 }
+      },
+      "additionalProperties": false
+    },
+    "engagement": {
+      "type": "object",
+      "required": ["id", "name", "mode", "scope", "authorization", "operator", "started_at"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^ENG-[A-Z0-9-]{2,40}$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "mode": { "enum": ["simulation", "authorized"] },
+        "scope": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 128 } },
+        "authorization": {
+          "type": "object",
+          "required": ["basis"],
+          "properties": {
+            "basis": { "type": "string", "minLength": 4, "maxLength": 256 },
+            "expires_at": { "type": "string", "format": "date-time" }
+          },
+          "additionalProperties": true
+        },
+        "operator": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "team": { "type": "array", "items": { "type": "string" }, "maxItems": 20 },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": ["string", "null"], "format": "date-time" },
+        "description": { "type": "string", "maxLength": 1000 }
+      },
+      "additionalProperties": true
+    },
+    "node": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "type": { "$ref": "#/$defs/nodeType" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "stage": { "$ref": "#/$defs/stage" },
+        "risk": { "type": "number", "minimum": 0, "maximum": 10 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "props": { "type": "object" },
+        "attck": { "$ref": "#/$defs/attck" }
+      },
+      "required": ["id", "type", "label", "stage"]
+    },
+    "edge": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "from": { "$ref": "#/$defs/identifier" },
+        "to": { "$ref": "#/$defs/identifier" },
+        "relation": { "$ref": "#/$defs/relation" },
+        "stage": { "$ref": "#/$defs/stage" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "props": { "type": "object" },
+        "attck": { "$ref": "#/$defs/attck" }
+      },
+      "required": ["id", "from", "to", "relation", "stage"]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "stage": { "$ref": "#/$defs/stage" },
+        "action": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+        "summary": { "type": "string", "minLength": 2, "maxLength": 500 },
+        "result": { "enum": ["success", "failure", "partial", "info"] },
+        "risk": { "type": "number", "minimum": 0, "maximum": 10 },
+        "detail": { "type": "string", "maxLength": 2000 },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "node_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/identifier" } },
+        "edge_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/identifier" } },
+        "attck": { "$ref": "#/$defs/attck" }
+      },
+      "required": ["id", "stage", "action", "summary", "result"]
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "type": { "enum": ["screenshot", "http", "config", "log", "file", "credential", "note"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "node_id": { "$ref": "#/$defs/identifier" },
+        "summary": { "type": "string", "maxLength": 1000 },
+        "hash": { "type": "string", "maxLength": 128 },
+        "path": { "type": "string", "maxLength": 300 },
+        "sensitive": { "type": "boolean" },
+        "props": { "type": "object" }
+      },
+      "required": ["id", "type", "title"]
+    },
+    "note": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "content": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "node_ids": { "type": "array", "items": { "$ref": "#/$defs/identifier" } }
+      },
+      "required": ["id", "content"]
+    }
+  }
+}

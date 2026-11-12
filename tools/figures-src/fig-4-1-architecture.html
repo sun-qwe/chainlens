@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<title>图 4-1 ChainLens 总体架构</title>
+<style>
+  .layer { position: absolute; left: 44px; width: 1512px; border: 1.5px solid #cbd5e1; border-radius: 14px; background: #f8fafc; }
+  .layer-label { position: absolute; left: 22px; top: -17px; background: #fff; padding: 0 10px; font-size: 19px; font-weight: 700; color: #334155; }
+  .box { position: absolute; border-radius: 10px; border: 1.5px solid; background: #fff; padding: 12px 16px; }
+  .box h4 { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+  .box p { font-size: 14.5px; color: #475569; line-height: 1.55; }
+  .tag { display: inline-block; font-size: 13px; padding: 2px 9px; border-radius: 999px; background: #eef2ff; color: #3730a3; margin: 4px 5px 0 0; }
+  .arrow { position: absolute; width: 0; height: 0; }
+  .note { position: absolute; font-size: 14.5px; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- 采集层 -->
+  <div class="layer" style="top:50px;height:208px;border-color:#93c5fd;background:#f5f9ff;">
+    <div class="layer-label" style="color:#1d4ed8;">采集层 · dsh-pentest 插件（Node ESM，只记录不攻击）</div>
+    <div class="box" style="left:20px;top:32px;width:300px;height:158px;border-color:#60a5fa;background:#fff;">
+      <h4 style="color:#1d4ed8;">智能体 / 操作者</h4>
+      <p>在授权会话中调用<br><span class="mono">pentest_*</span> 工具；<br>或使用 CLI 生成仿真数据</p>
+      <div><span class="tag">DSH / Cordis</span><span class="tag">可选工具注册</span></div>
+    </div>
+    <div class="box" style="left:352px;top:32px;width:330px;height:158px;border-color:#60a5fa;">
+      <h4 style="color:#1d4ed8;">记录与校验</h4>
+      <p><span class="mono">schema.js</span>：字段/引用校验、<br>递归脱敏、scope 守卫；<br><span class="mono">store.js</span>：JSONL 原子追加</p>
+      <div><span class="tag">[REDACTED]</span><span class="tag">私网范围</span></div>
+    </div>
+    <div class="box" style="left:714px;top:32px;width:330px;height:158px;border-color:#60a5fa;">
+      <h4 style="color:#1d4ed8;">确定性仿真</h4>
+      <p><span class="mono">simulator.js</span>：固定 seed<br><span class="mono">scenarios/*.js</span>：三场景蓝本<br>输出可复现的探索链</p>
+      <div><span class="tag">seed 固定</span><span class="tag">无网络</span></div>
+    </div>
+    <div class="box" style="left:1076px;top:32px;width:414px;height:158px;border-color:#60a5fa;">
+      <h4 style="color:#1d4ed8;">工具接口</h4>
+      <p><span class="mono">start_engagement</span> / <span class="mono">record_step</span><br><span class="mono">finish_engagement</span> / <span class="mono">demo</span><br>未安装 DSH 时降级为 CLI，插件仍可加载</p>
+      <div><span class="tag">try/catch 动态 import</span></div>
+    </div>
+  </div>
+
+  <!-- 数据层 -->
+  <div class="layer" style="top:300px;height:150px;border-color:#5eead4;background:#f2fdfb;">
+    <div class="layer-label" style="color:#0f766e;">数据层 · 唯一事实来源（UTF-8 文本）</div>
+    <div class="box" style="left:20px;top:30px;width:430px;height:100px;border-color:#2dd4bf;">
+      <h4 style="color:#0f766e;">chain.jsonl</h4>
+      <p>事件溯源记录流：meta / node / edge /<br>event / evidence / note（追加写、可回放）</p>
+    </div>
+    <div class="box" style="left:480px;top:30px;width:300px;height:100px;border-color:#2dd4bf;">
+      <h4 style="color:#0f766e;">manifest.json</h4>
+      <p>场景清单与统计<br>（records / nodes / events …）</p>
+    </div>
+    <div class="box" style="left:810px;top:30px;width:330px;height:100px;border-color:#2dd4bf;">
+      <h4 style="color:#0f766e;">chain.schema.json</h4>
+      <p>JSON Schema 2020-12<br>字段级约束与向前兼容</p>
+    </div>
+    <div class="box" style="left:1170px;top:30px;width:320px;height:100px;border-color:#2dd4bf;">
+      <h4 style="color:#0f766e;">dsl 约定</h4>
+      <p>十类节点 · 十一种关系<br>七个阶段 · ATT&CK 标签</p>
+    </div>
+  </div>
+
+  <!-- 分析层 -->
+  <div class="layer" style="top:492px;height:188px;border-color:#c4b5fd;background:#faf7ff;">
+    <div class="layer-label" style="color:#6d28d9;">分析层 · 纯函数（可单测、无 DOM 依赖）</div>
+    <div class="box" style="left:20px;top:30px;width:330px;height:138px;border-color:#a78bfa;">
+      <h4 style="color:#6d28d9;">解析与归一化</h4>
+      <p>逐行解析、坏行隔离<br>语义校验（errors / warnings）<br>质量分与统计</p>
+    </div>
+    <div class="box" style="left:382px;top:30px;width:330px;height:138px;border-color:#a78bfa;">
+      <h4 style="color:#6d28d9;">图模型与布局</h4>
+      <p>节点/边聚合、阶段分层<br>重心排序 + 轻量力松弛<br>力导向对照视图</p>
+    </div>
+    <div class="box" style="left:744px;top:30px;width:330px;height:138px;border-color:#a78bfa;">
+      <h4 style="color:#6d28d9;">指标与分析</h4>
+      <p>关键路径 DP、风险分<br>阶段时长、证据覆盖<br>ATT&CK 覆盖矩阵</p>
+    </div>
+    <div class="box" style="left:1106px;top:30px;width:384px;height:138px;border-color:#a78bfa;">
+      <h4 style="color:#6d28d9;">回放状态机</h4>
+      <p>事件游标 → 可见子图<br>播放节奏（350–1400 ms）<br>深链状态复现</p>
+    </div>
+  </div>
+
+  <!-- 展示层 -->
+  <div class="layer" style="top:722px;height:196px;border-color:#fcd34d;background:#fffdf5;">
+    <div class="layer-label" style="color:#b45309;">展示层 · 纯前端、零第三方依赖、零构建（自绘 SVG）</div>
+    <div class="box" style="left:20px;top:32px;width:228px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">总览</h4><p>KPI / 分布 / 风险摘要</p>
+    </div>
+    <div class="box" style="left:268px;top:32px;width:228px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">链路图</h4><p>分层布局 / 关键路径 / 回放</p>
+    </div>
+    <div class="box" style="left:516px;top:32px;width:228px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">时间线</h4><p>阶段泳道 / 播放控制</p>
+    </div>
+    <div class="box" style="left:764px;top:32px;width:228px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">ATT&CK 矩阵</h4><p>战术×技术热力 / 下钻</p>
+    </div>
+    <div class="box" style="left:1012px;top:32px;width:228px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">发现与证据</h4><p>筛选 / 导出 / 脱敏</p>
+    </div>
+    <div class="box" style="left:1260px;top:32px;width:232px;height:136px;border-color:#fbbf24;">
+      <h4 style="color:#b45309;">分析报告</h4><p>自动生成 / 打印 PDF</p>
+    </div>
+  </div>
+
+  <!-- 向下箭头 -->
+  <svg style="position:absolute;left:0;top:0;width:1600px;height:1000px;pointer-events:none;">
+    <defs>
+      <marker id="ar" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+        <path d="M0,0 L12,6 L0,12 z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <line x1="800" y1="258" x2="800" y2="298" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)"/>
+    <line x1="800" y1="450" x2="800" y2="490" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)"/>
+    <line x1="800" y1="680" x2="800" y2="720" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)"/>
+  </svg>
+
+  <div class="legend" style="left:auto;right:44px;">
+    <span><i style="background:#60a5fa;"></i>采集</span>
+    <span><i style="background:#2dd4bf;"></i>数据</span>
+    <span><i style="background:#a78bfa;"></i>分析</span>
+    <span><i style="background:#fbbf24;"></i>展示</span>
+    <span style="color:#475569;">数据单向流动，视图只读同一份事实</span>
+  </div>
+</div>
+</body>
+</html>
